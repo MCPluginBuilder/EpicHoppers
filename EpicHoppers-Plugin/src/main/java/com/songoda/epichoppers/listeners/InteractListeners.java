@@ -67,12 +67,12 @@ public class InteractListeners implements Listener {
 
         if (Settings.USE_PROTECTION_PLUGINS.getBoolean() && event.getClickedBlock().getType() == Material.HOPPER) {
             if (!WGCheck) {
-                AdventureUtils.sendMessage(this.plugin, this.plugin.getLocale().getMessage("event.general.worldguard").getPrefixedMessage(), player);
+                AdventureUtils.sendMessage(this.plugin.getLocale().getMessage("event.general.worldguard").getPrefixedMessage(), player);
                 return;
             }
 
             if (!ProtectionManager.canInteract(player, event.getClickedBlock().getLocation())) {
-                AdventureUtils.sendMessage(this.plugin, this.plugin.getLocale().getMessage("event.general.protectedclaim").getPrefixedMessage(), player);
+                AdventureUtils.sendMessage(this.plugin.getLocale().getMessage("event.general.protectedclaim").getPrefixedMessage(), player);
                 return;
             }
         }
@@ -91,7 +91,7 @@ public class InteractListeners implements Listener {
         if (playerData.getSyncType() == null) {
             if (event.getClickedBlock().getType() == Material.HOPPER) {
                 if (!this.plugin.getHopperManager().isReady()) {
-                    AdventureUtils.sendMessage(this.plugin, this.plugin.getLocale().getMessage("event.hopper.notready").getPrefixedMessage());
+                    AdventureUtils.sendMessage(this.plugin.getLocale().getMessage("event.hopper.notready").getPrefixedMessage());
                     event.setCancelled(true);
                     return;
                 }

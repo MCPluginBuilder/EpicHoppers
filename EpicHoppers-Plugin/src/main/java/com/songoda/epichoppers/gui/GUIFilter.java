@@ -18,6 +18,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -46,6 +48,34 @@ public class GUIFilter extends CustomizableGui {
             GUIFilter.OPEN_INVENTORIES.remove(this);
             hopper.setActivePlayer(null);
             compile();
+        });
+
+        defaultClicker = (event) -> {
+            InventoryClickEvent originalEvent = event.event;
+            originalEvent.setCancelled(true);
+
+            int slot = originalEvent.getSlot();
+            boolean isUnlockedSlot = (slot >= 9 && slot <= 14) ||
+                    (slot >= 18 && slot <= 23) ||
+                    (slot >= 27 && slot <= 32) ||
+                    (slot >= 36 && slot <= 41);
+
+            if (isUnlockedSlot) {
+                if (originalEvent.getCursor() != null && originalEvent.getCursor().getType() != Material.AIR) {
+                    // Place item logic
+                    ItemStack clonedItem = originalEvent.getCursor().clone();
+                    clonedItem.setAmount(1);
+                    inventory.setItem(slot, clonedItem);
+                } else if (inventory.getItem(slot) != null && inventory.getItem(slot).getType() != Material.AIR) {
+                    // Remove item logic - clear the slot when clicking with empty cursor
+                    inventory.setItem(slot, null);
+                }
+            }
+        };
+
+        //Cancel all drag events to prevent issues with item placement
+        setOnDrag((event) -> {
+            event.event.setCancelled(true);
         });
 
         Filter filter = hopper.getFilter();

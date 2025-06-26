@@ -152,27 +152,28 @@ public class BlockListeners implements Listener {
 
         hopper.forceClose();
 
-        hopper.getFilter().getWhiteList()
-                .stream()
-                .filter(Objects::nonNull)
-                .forEach(item -> event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item));
-        hopper.getFilter().getBlackList()
-                .stream()
-                .filter(Objects::nonNull)
-                .forEach(item -> event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item));
-        hopper.getFilter().getVoidList()
-                .stream()
-                .filter(Objects::nonNull)
-                .forEach(item -> event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item));
-
-        hopper.getFilter().getAutoSellWhiteList()
-                .stream()
-                .filter(Objects::nonNull)
-                .forEach(item -> event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item));
-        hopper.getFilter().getAutoSellBlackList()
-                .stream()
-                .filter(Objects::nonNull)
-                .forEach(item -> event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item));
+        //Do not drop items, for a bugfix it was moved to a cloning system instead of taking items from the player
+//        hopper.getFilter().getWhiteList()
+//                .stream()
+//                .filter(Objects::nonNull)
+//                .forEach(item -> event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item));
+//        hopper.getFilter().getBlackList()
+//                .stream()
+//                .filter(Objects::nonNull)
+//                .forEach(item -> event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item));
+//        hopper.getFilter().getVoidList()
+//                .stream()
+//                .filter(Objects::nonNull)
+//                .forEach(item -> event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item));
+//
+//        hopper.getFilter().getAutoSellWhiteList()
+//                .stream()
+//                .filter(Objects::nonNull)
+//                .forEach(item -> event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item));
+//        hopper.getFilter().getAutoSellBlackList()
+//                .stream()
+//                .filter(Objects::nonNull)
+//                .forEach(item -> event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), item));
 
         this.plugin.getHopperManager().removeHopper(block.getLocation());
         this.plugin.getDataManager().delete(hopper);
