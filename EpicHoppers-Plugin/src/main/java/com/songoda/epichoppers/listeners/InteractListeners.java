@@ -1,5 +1,7 @@
 package com.songoda.epichoppers.listeners;
 
+import com.songoda.core.SongodaCore;
+import com.songoda.core.SongodaPlugin;
 import com.songoda.core.chat.AdventureUtils;
 import com.songoda.core.hooks.ProtectionManager;
 import com.songoda.core.hooks.WorldGuardHook;
@@ -62,19 +64,12 @@ public class InteractListeners implements Listener {
             return;
         }
 
-        Boolean flagValue = WorldGuardHook.getBooleanFlag(event.getClickedBlock().getLocation().getChunk(), "use");
-        boolean WGCheck = (flagValue == null) || flagValue;
+        boolean isCustomHopper = event.getClickedBlock().getType().equals(Material.HOPPER) && this.plugin.getHopperManager().isHopper(event.getClickedBlock().getLocation());
 
-        if (Settings.USE_PROTECTION_PLUGINS.getBoolean() && event.getClickedBlock().getType() == Material.HOPPER) {
-            if (!WGCheck) {
-                AdventureUtils.sendMessage(this.plugin.getLocale().getMessage("event.general.worldguard").getPrefixedMessage(), player);
-                return;
-            }
-
-            if (!ProtectionManager.canInteract(player, event.getClickedBlock().getLocation())) {
-                AdventureUtils.sendMessage(this.plugin.getLocale().getMessage("event.general.protectedclaim").getPrefixedMessage(), player);
-                return;
-            }
+        if (Settings.USE_PROTECTION_PLUGINS.getBoolean() && isCustomHopper && !ProtectionManager.canInteract(player, event.getClickedBlock().getLocation())) {
+            AdventureUtils.sendMessage(this.plugin.getLocale().getMessage("event.general.protectedclaim").getPrefixedMessage(), player);
+            event.setCancelled(true);
+            return;
         }
 
         if (Bukkit.getPluginManager().isPluginEnabled("FabledSkyBlock")) {
@@ -96,7 +91,7 @@ public class InteractListeners implements Listener {
                     return;
                 }
 
-                if (Settings.ALLOW_NORMAL_HOPPERS.getBoolean() && !this.plugin.getHopperManager().isHopper(event.getClickedBlock().getLocation())) {
+                if (Settings.ALLOW_NORMAL_HOPPERS.getBoolean() && !isCustomHopper) {
                     return;
                 }
 
