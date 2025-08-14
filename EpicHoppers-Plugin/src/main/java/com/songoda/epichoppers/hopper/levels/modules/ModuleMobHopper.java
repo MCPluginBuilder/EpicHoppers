@@ -67,13 +67,14 @@ public class ModuleMobHopper extends Module {
     public ItemStack getGUIButton(Hopper hopper) {
         ItemStack block = new ItemStack(Material.ROTTEN_FLESH, 1);
         AdventureUtils.formatItemName(block, this.plugin.getLocale().getMessage("interface.hopper.mobtitle").getMessage());
-        ArrayList<String> loreBlock = new ArrayList<>();
-        String[] parts = this.plugin.getLocale().getMessage("interface.hopper.moblore").processPlaceholder("enabled",
-                isEnabled(hopper) ? this.plugin.getLocale().getMessage("general.word.enabled").toText()
-                        : this.plugin.getLocale().getMessage("general.word.disabled").toText()).toText().split("\\|");
-        for (String line : parts) {
-            loreBlock.add(TextUtils.formatText(line));
-        }
+        List<String> loreMob = TextUtils.formatLore(
+                this.plugin.getLocale().getMessage("interface.hopper.moblore")
+                        .processPlaceholder("enabled",
+                                isEnabled(hopper) ? this.plugin.getLocale().getMessage("general.word.enabled").toText()
+                                        : this.plugin.getLocale().getMessage("general.word.disabled").toText())
+                        .toText()
+        );
+        ArrayList<String> loreBlock = new ArrayList<>(loreMob);
         AdventureUtils.formatItemLore(block, loreBlock);
         return block;
     }

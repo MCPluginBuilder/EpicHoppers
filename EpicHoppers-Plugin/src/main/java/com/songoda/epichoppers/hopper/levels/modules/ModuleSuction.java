@@ -192,14 +192,13 @@ public class ModuleSuction extends Module {
         ItemStack item = XMaterial.CAULDRON.parseItem();
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(locale.getMessage("interface.hopper.suctiontitle").toText());
-        List<String> lore = new ArrayList<>();
-        String[] parts = locale.getMessage("interface.hopper.suctionlore")
-                .processPlaceholder("status", isEnabled(hopper) ? locale.getMessage("general.word.enabled").toText() : locale.getMessage("general.word.disabled").toText())
-                .processPlaceholder("radius", getRadius(hopper)).toText().split("\\|");
-        for (String line : parts) {
-            lore.add(TextUtils.formatText(line));
-        }
-        meta.setLore(lore);
+        List<String> loreSuction = TextUtils.formatLore(
+                locale.getMessage("interface.hopper.suctionlore")
+                        .processPlaceholder("status", isEnabled(hopper) ? locale.getMessage("general.word.enabled").toText() : locale.getMessage("general.word.disabled").toText())
+                        .processPlaceholder("radius", getRadius(hopper))
+                        .toText()
+        );
+        meta.setLore(loreSuction);
         item.setItemMeta(meta);
         return item;
     }

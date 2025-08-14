@@ -147,18 +147,12 @@ public class ModuleAutoSell extends Module {
         ItemMeta sellMeta = sellItem.getItemMeta();
 
         sellMeta.setDisplayName(this.plugin.getLocale().getMessage("interface.hopper.selltitle").toText());
-        ArrayList<String> loreSell = new ArrayList<>();
-
-        String[] parts = this.plugin.getLocale().getMessage("interface.hopper.selllore")
-                .processPlaceholder("timeleft", String.valueOf(getTime(hopper) == -9999 ? "∞" : (int) Math.floor(getTime(hopper) / 20)))
-                .processPlaceholder("state", String.valueOf(isNotifying(hopper)))
-                .toText()
-                .split("\\|");
-
-        for (String line : parts) {
-            loreSell.add(TextUtils.formatText(line));
-        }
-
+        List<String> loreSell = TextUtils.formatLore(
+                this.plugin.getLocale().getMessage("interface.hopper.selllore")
+                        .processPlaceholder("timeleft", String.valueOf(getTime(hopper) == -9999 ? "∞" : (int) Math.floor(getTime(hopper) / 20)))
+                        .processPlaceholder("state", String.valueOf(isNotifying(hopper)))
+                        .toText()
+        );
         sellMeta.setLore(loreSell);
         sellItem.setItemMeta(sellMeta);
         return sellItem;

@@ -79,30 +79,26 @@ public class GUIOverview extends CustomizableGui {
         ItemStack pearl = new ItemStack(Material.ENDER_PEARL, 1);
         ItemMeta pearlMeta = pearl.getItemMeta();
         pearlMeta.setDisplayName(this.plugin.getLocale().getMessage("interface.hopper.perltitle").toText());
-        ArrayList<String> lorePearl = new ArrayList<>();
-        String[] parts = this.plugin.getLocale().getMessage("interface.hopper.perllore2")
-                .processPlaceholder(
-                        "type",
-                        this.hopper.getTeleportTrigger() == TeleportTrigger.DISABLED
-                                ? this.plugin.getLocale().getMessage("general.word.disabled").toText()
-                                : this.hopper.getTeleportTrigger().name()
-                )
-                .toText()
-                .split("\\|");
-        for (String line : parts) {
-            lorePearl.add(TextUtils.formatText(line));
-        }
+        List<String> lorePearl = TextUtils.formatLore(
+                this.plugin.getLocale().getMessage("interface.hopper.perllore2")
+                        .processPlaceholder(
+                                "type",
+                                this.hopper.getTeleportTrigger() == TeleportTrigger.DISABLED
+                                        ? this.plugin.getLocale().getMessage("general.word.disabled").toText()
+                                        : this.hopper.getTeleportTrigger().name()
+                        )
+                        .toText()
+        );
         pearlMeta.setLore(lorePearl);
         pearl.setItemMeta(pearlMeta);
 
         ItemStack filter = new ItemStack(ServerVersion.isServerVersionAtLeast(ServerVersion.V1_13) ? Material.COMPARATOR : Material.valueOf("REDSTONE_COMPARATOR"), 1);
         ItemMeta filterMeta = filter.getItemMeta();
         filterMeta.setDisplayName(this.plugin.getLocale().getMessage("interface.hopper.filtertitle").toText());
-        ArrayList<String> loreFilter = new ArrayList<>();
-        parts = this.plugin.getLocale().getMessage("interface.hopper.filterlore").toText().split("\\|");
-        for (String line : parts) {
-            loreFilter.add(TextUtils.formatText(line));
-        }
+        List<String> loreFilter = TextUtils.formatLore(
+                this.plugin.getLocale().getMessage("interface.hopper.filterlore")
+                        .toText()
+        );
         filterMeta.setLore(loreFilter);
         filter.setItemMeta(filterMeta);
 
@@ -123,14 +119,15 @@ public class GUIOverview extends CustomizableGui {
 
         BoostData boostData = EpicHoppersApi.getApi().getBoostManager().getBoost(this.hopper.getPlacedBy());
         if (boostData != null) {
-            parts = this.plugin.getLocale().getMessage("interface.hopper.boostedstats")
-                    .processPlaceholder("amount", Integer.toString(boostData.getMultiplier()))
-                    .processPlaceholder("time", TimeUtils.makeReadable(boostData.getEndTime() - System.currentTimeMillis()))
-                    .toText().split("\\|");
+            List<String> loreBoosted = TextUtils.formatLore(
+                    this.plugin.getLocale().getMessage("interface.hopper.boostedstats")
+                            .processPlaceholder("level", level.getLevel())
+                            .processPlaceholder("nextlevel", nextLevel != null ? String.valueOf(nextLevel.getLevel()) : "MAX")
+                            .processPlaceholder("boost", String.valueOf(boostData.getMultiplier()))
+                            .toText()
+            );
             lore.add("");
-            for (String line : parts) {
-                lore.add(TextUtils.formatText(line));
-            }
+            lore.addAll(loreBoosted);
         }
 
         itemmeta.setLore(lore);
@@ -139,14 +136,11 @@ public class GUIOverview extends CustomizableGui {
         ItemStack hook = new ItemStack(Material.TRIPWIRE_HOOK, 1);
         ItemMeta hookMeta = hook.getItemMeta();
         hookMeta.setDisplayName(this.plugin.getLocale().getMessage("interface.hopper.synchopper").toText());
-        ArrayList<String> loreHook = new ArrayList<>();
-        parts = this.plugin.getLocale().getMessage("interface.hopper.synclore")
-                .processPlaceholder("amount", this.hopper.getLinkedBlocks().stream().distinct().count())
-                .toText().split("\\|");
-        for (String line : parts) {
-            loreHook.add(TextUtils.formatText(line));
-        }
-        hookMeta.setLore(loreHook);
+        List<String> loreSync = TextUtils.formatLore(
+                this.plugin.getLocale().getMessage("interface.hopper.synclore")
+                        .processPlaceholder("amount", hopper.getLinkedBlocks().size()).toText()
+        );
+        hookMeta.setLore(loreSync);
         hook.setItemMeta(hookMeta);
 
         Map<Integer, Integer[]> layouts = new HashMap<>();

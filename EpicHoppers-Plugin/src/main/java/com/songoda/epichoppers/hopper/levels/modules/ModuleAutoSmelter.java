@@ -83,19 +83,16 @@ public class ModuleAutoSmelter extends Module {
         ItemStack block = XMaterial.IRON_INGOT.parseItem();
         ItemMeta blockMeta = block.getItemMeta();
         blockMeta.setDisplayName(this.plugin.getLocale().getMessage("interface.hopper.smelttitle").toText());
-        ArrayList<String> loreBlock = new ArrayList<>();
-        String[] parts = this.plugin.getLocale().getMessage("interface.hopper.smeltlore")
-                .processPlaceholder("timeleft", String.valueOf(getTime(hopper) == -9999 ? "∞" : (int) Math.floor(getTime(hopper) / 20.0)))
-                .processPlaceholder("enabled", isEnabled(hopper) ?
-                        this.plugin.getLocale().getMessage("general.word.enabled").toText() :
-                        this.plugin.getLocale().getMessage("general.word.disabled").toText()
-                )
-                .toText()
-                .split("\\|");
-        for (String line : parts) {
-            loreBlock.add(TextUtils.formatText(line));
-        }
-        blockMeta.setLore(loreBlock);
+        List<String> loreSmelt = TextUtils.formatLore(
+                this.plugin.getLocale().getMessage("interface.hopper.smeltlore")
+                        .processPlaceholder("timeleft", getTime(hopper) != -9999 ?
+                                String.valueOf((int) Math.floor(getTime(hopper) / 20)) : "∞")
+                        .processPlaceholder("enabled", getTime(hopper) != -9999 ?
+                                this.plugin.getLocale().getMessage("general.word.enabled").toText() :
+                                this.plugin.getLocale().getMessage("general.word.disabled").toText())
+                        .toText()
+        );
+        blockMeta.setLore(loreSmelt);
         block.setItemMeta(blockMeta);
         return block;
     }

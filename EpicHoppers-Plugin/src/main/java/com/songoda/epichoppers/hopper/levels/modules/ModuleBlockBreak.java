@@ -127,18 +127,14 @@ public class ModuleBlockBreak extends Module {
     public ItemStack getGUIButton(Hopper hopper) {
         ItemStack block = new ItemStack(Material.IRON_ORE, 1);
         AdventureUtils.formatItemName(block, this.plugin.getLocale().getMessage("interface.hopper.blocktitle").getMessage());
-        ArrayList<String> loreBlock = new ArrayList<>();
-        String[] parts = this.plugin.getLocale()
-                .getMessage("interface.hopper.blocklore")
-                .processPlaceholder("enabled", isEnabled(hopper)
-                        ? this.plugin.getLocale().getMessage("general.word.enabled").toText()
-                        : this.plugin.getLocale().getMessage("general.word.disabled").toText()
-                )
-                .toText()
-                .split("\\|");
-        for (String line : parts) {
-            loreBlock.add(TextUtils.formatText(line));
-        }
+        List<String> loreBlock = TextUtils.formatLore(
+                this.plugin.getLocale().getMessage("interface.hopper.blocklore")
+                        .processPlaceholder("enabled", isEnabled(hopper) ?
+                                this.plugin.getLocale().getMessage("general.word.enabled").toText()
+                                : this.plugin.getLocale().getMessage("general.word.disabled").toText()
+                        )
+                        .toText()
+        );
         AdventureUtils.formatItemLore(block, loreBlock);
         return block;
     }

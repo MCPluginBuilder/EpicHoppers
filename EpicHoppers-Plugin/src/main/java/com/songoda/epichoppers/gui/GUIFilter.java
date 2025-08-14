@@ -165,11 +165,12 @@ public class GUIFilter extends CustomizableGui {
         ItemStack itemInfo = XMaterial.PAPER.parseItem();
         ItemMeta itemMetaInfo = itemInfo.getItemMeta();
         itemMetaInfo.setDisplayName(plugin.getLocale().getMessage("interface.filter.infotitle").toText());
-        ArrayList<String> loreInfo = new ArrayList<>();
-        String[] parts = plugin.getLocale().getMessage("interface.filter.infolore").toText().split("\\|");
-        for (String line : parts) {
-            loreInfo.add(TextUtils.formatText(line));
-        }
+        List<String> loreInfo = TextUtils.formatLore(
+                plugin.getLocale().getMessage("interface.filter.infolore")
+                        .processPlaceholder("whitelist", String.valueOf(hopper.getFilter().getWhiteList().size()))
+                        .processPlaceholder("blacklist", String.valueOf(hopper.getFilter().getBlackList().size()))
+                        .toText()
+        );
         itemMetaInfo.setLore(loreInfo);
         itemInfo.setItemMeta(itemMetaInfo);
 
@@ -179,14 +180,12 @@ public class GUIFilter extends CustomizableGui {
         ItemStack hook = XMaterial.TRIPWIRE_HOOK.parseItem();
         ItemMeta hookMeta = hook.getItemMeta();
         hookMeta.setDisplayName(plugin.getLocale().getMessage("interface.hopper.rejectsync").toText());
-        ArrayList<String> loreHook = new ArrayList<>();
-        parts = plugin.getLocale().getMessage("interface.hopper.synclore")
-                .processPlaceholder("amount", filter.getEndPoint() != null ? 1 : 0)
-                .toText().split("\\|");
-        for (String line : parts) {
-            loreHook.add(TextUtils.formatText(line));
-        }
-        hookMeta.setLore(loreHook);
+        List<String> loreSync = TextUtils.formatLore(
+                plugin.getLocale().getMessage("interface.hopper.synclore")
+                        .processPlaceholder("amount", hopper.getLinkedBlocks().size())
+                        .toText()
+        );
+        hookMeta.setLore(loreSync);
         hook.setItemMeta(hookMeta);
         setButton("reject", 43, hook,
                 (event) -> {

@@ -144,17 +144,10 @@ public class GUIAutoSellFilter extends CustomizableGui {
         indicatorMeta = indicatorItem.getItemMeta();
 
         indicatorMeta.setDisplayName(plugin.getLocale().getMessage("interface.autosell-filter.infotitle").toText());
-        ArrayList<String> loreInfo = new ArrayList<>();
-        String[] parts = plugin
-                .getLocale()
-                .getMessage("interface.autosell-filter.infolore")
-                .toText()
-                .split("\\|");
-
-        for (String line : parts) {
-            loreInfo.add(TextUtils.formatText(line));
-        }
-
+        List<String> loreInfo = TextUtils.formatLore(
+                plugin.getLocale().getMessage("interface.autosell-filter.infolore")
+                        .toText()
+        );
         indicatorMeta.setLore(loreInfo);
         indicatorItem.setItemMeta(indicatorMeta);
 

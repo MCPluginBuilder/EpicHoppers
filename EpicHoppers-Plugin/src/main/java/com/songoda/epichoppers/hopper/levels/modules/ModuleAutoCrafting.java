@@ -192,13 +192,15 @@ public class ModuleAutoCrafting extends Module {
         ItemMeta craftingMeta = crafting.getItemMeta();
         craftingMeta.setDisplayName(this.plugin.getLocale().getMessage("interface.hopper.craftingtitle")
                 .toText());
-        ArrayList<String> lorecrafting = new ArrayList<>();
-        String[] parts = this.plugin.getLocale().getMessage("interface.hopper.craftinglore")
-                .toText().split("\\|");
-        for (String line : parts) {
-            lorecrafting.add(TextUtils.formatText(line));
-        }
-        craftingMeta.setLore(lorecrafting);
+        List<String> loreCrafting = TextUtils.formatLore(
+                this.plugin.getLocale().getMessage("interface.hopper.craftinglore")
+                        .processPlaceholder("enabled", getAutoCrafting(hopper) != null && 
+                                getAutoCrafting(hopper).getType() != Material.AIR ?
+                                this.plugin.getLocale().getMessage("general.word.enabled").toText() :
+                                this.plugin.getLocale().getMessage("general.word.disabled").toText())
+                        .toText()
+        );
+        craftingMeta.setLore(loreCrafting);
         crafting.setItemMeta(craftingMeta);
         return crafting;
     }
