@@ -102,7 +102,7 @@ public class Methods {
                 entity.getWorld().spawnParticle(bukkitParticle, location, 200, .5, .5, .5, 0);
             } else {
                 // Fallback particle
-                WarningManager.warnOnce(getPlugin(), "upgrade_particle_type", 
+                WarningManager.warnOnce(getPlugin(), WarningManager.WarningType.PARTICLE_WARNING, 
                     "Invalid Upgrade particle type in config: " + configParticleType + ". Using fallback particle.");
                 entity.getWorld().spawnParticle(XParticle.FLAME.get(), location, 200, .5, .5, .5, 0);
             }

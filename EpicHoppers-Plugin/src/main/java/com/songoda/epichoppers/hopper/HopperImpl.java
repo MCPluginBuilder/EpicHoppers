@@ -224,7 +224,7 @@ public class HopperImpl implements Hopper {
                 loc.getWorld().spawnParticle(bukkitParticle, loc, 100, 0.5, 0.5, 0.5, 0);
             } else {
                 // Fallback Particle
-                WarningManager.warnOnce(getPlugin(), "upgrade_particle_type_hopper",
+                WarningManager.warnOnce(getPlugin(), WarningManager.WarningType.PARTICLE_WARNING,
                     "Invalid Upgrade particle type in config: " + particleType + ". Using fallback particle.");
                 loc.getWorld().spawnParticle(XParticle.FLAME.get(), loc, 100, 0.5, 0.5, 0.5, 0);
             }

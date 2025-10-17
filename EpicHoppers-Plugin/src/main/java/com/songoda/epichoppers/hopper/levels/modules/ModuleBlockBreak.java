@@ -106,7 +106,7 @@ public class ModuleBlockBreak extends Module {
                     bukkitParticle = xParticleOpt.get().get();
                 } else {
                     // Fallback Particle
-                    WarningManager.warnOnce(plugin, "blockbreak_particle_type",
+                    WarningManager.warnOnce(plugin, WarningManager.WarningType.OTHER_WARNING,
                         "Invalid BlockBreak particle type in config: " + particleType + ". Using fallback particle.");
                     bukkitParticle = XParticle.LAVA.get();
                 }
