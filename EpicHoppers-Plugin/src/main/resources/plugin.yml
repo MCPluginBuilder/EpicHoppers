@@ -24,6 +24,7 @@ softdepend:
   - Vault
   - WildStacker
   - WorldGuard
+  - VortexStacker
 load: POSTWORLD
 author: Songoda
 website: ${project.parent.url}

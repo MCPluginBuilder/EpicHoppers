@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.songoda</groupId>
         <artifactId>EpicHoppers-Parent</artifactId>
-        <version>6.6.0</version>
+        <version>6.7.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>EpicHoppers-Plugin</artifactId>
@@ -14,7 +14,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.6.2</version>
 
                 <executions>
                     <execution>
@@ -83,6 +83,11 @@
 
     <repositories>
         <repository>
+            <id>vortex-repo</id>
+            <url>https://repo.vortexdevelopment.net/repository/</url>
+        </repository>
+
+        <repository>
             <id>rosewood-repo</id>
             <url>https://repo.rosewooddev.io/repository/public/</url>
         </repository>
@@ -121,6 +126,13 @@
             <artifactId>SongodaCore</artifactId>
             <version>${songoda.coreVersion}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.vortexdevelopment</groupId>
+            <artifactId>VortexStacker-API</artifactId>
+            <version>1.0.3</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

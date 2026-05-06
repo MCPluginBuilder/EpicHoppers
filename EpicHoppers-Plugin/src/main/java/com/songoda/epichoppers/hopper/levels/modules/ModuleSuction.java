@@ -14,6 +14,8 @@ import com.songoda.third_party.com.cryptomorin.xseries.particles.XParticle;
 import com.songoda.ultimatestacker.api.UltimateStackerApi;
 import dev.rosewood.rosestacker.api.RoseStackerAPI;
 import dev.rosewood.rosestacker.stack.StackedItem;
+import net.vortexdevelopment.vortexstacker.api.VortexStackerApi;
+import net.vortexdevelopment.vortexstacker.api.modules.stack.item.StackedItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -27,6 +29,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +42,7 @@ public class ModuleSuction extends Module {
     private static final boolean WILD_STACKER = Bukkit.getPluginManager().isPluginEnabled("WildStacker");
     private static final boolean ULTIMATE_STACKER = Bukkit.getPluginManager().isPluginEnabled("UltimateStacker");
     private static final boolean ROSE_STACKER = Bukkit.getPluginManager().isPluginEnabled("RoseStacker");
+    private static final boolean VORTEX_STACKER = Bukkit.getPluginManager().isPluginEnabled("VortexStacker");
 
     private final int maxSearchRadius;
 
@@ -167,6 +171,19 @@ public class ModuleSuction extends Module {
             if (stackedItem != null) {
                 return stackedItem.getStackSize();
             }
+        } else if (VORTEX_STACKER) {
+            // Placeholder for VortexStacker logic if available
+            StackedItemManager stackedItemManager = VortexStackerApi.getItemManager();
+            if (stackedItemManager != null) {
+                net.vortexdevelopment.vortexstacker.api.modules.stack.item.StackedItem stackedItem = stackedItemManager.getStackedItem(item);
+                if (stackedItem != null) {
+                    BigInteger amount = stackedItem.getAmount();
+                    // Safely convert BigInteger to int, capping at Integer.MAX_VALUE
+                    return amount.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0
+                            ? Integer.MAX_VALUE
+                            : amount.intValue();
+                }
+            }
         }
         return item.getItemStack().getAmount();
     }
@@ -176,6 +193,14 @@ public class ModuleSuction extends Module {
             UltimateStackerApi.getStackedItemManager().updateStack(item, amount);
         } else if (WILD_STACKER) {
             WildStackerAPI.getStackedItem(item).setStackAmount(amount, true);
+        } else if (VORTEX_STACKER) {
+            StackedItemManager stackedItemManager = VortexStackerApi.getItemManager();
+            if (stackedItemManager != null) {
+                net.vortexdevelopment.vortexstacker.api.modules.stack.item.StackedItem stackedItem =stackedItemManager.getStackedItem(item);
+                if (stackedItem != null) {
+                    stackedItem.setAmount(BigInteger.valueOf(amount));
+                }
+            }
         } else {
             item.getItemStack().setAmount(Math.min(amount, item.getItemStack().getMaxStackSize()));
         }
