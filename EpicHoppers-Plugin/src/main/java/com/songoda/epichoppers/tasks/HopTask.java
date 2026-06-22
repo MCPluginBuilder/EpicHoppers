@@ -170,6 +170,73 @@ public class HopTask extends BukkitRunnable {
         }
     }
 
+    private boolean tryPushCrafter(HopperImpl hopper,
+                                  StorageContainerCache.Cache hopperCache,
+                                  Crafter crafter,
+                                  Inventory crafterInventory,
+                                  StorageContainerCache.Cache filterCache,
+                                  int maxToMove, Collection<Material> blockedMaterials) {
+
+        for (int hopperSlot = 0; hopperSlot < 5; hopperSlot++) {
+            ItemStack item = hopperCache.cachedInventory[hopperSlot];
+
+            if (item == null
+                    || (hopperCache.cacheChanged[hopperSlot] && item.getAmount() - hopperCache.cacheAdded[hopperSlot] < maxToMove)
+                    || blockedMaterials.contains(item.getType())
+                    || hopper.getFilter().getVoidList().stream().anyMatch(itemStack -> Methods.isSimilarMaterial(itemStack, item))) {
+                continue;
+            }
+
+            ItemStack itemToMove = item.clone();
+            itemToMove.setAmount(1);
+
+            boolean blocked = (!hopper.getFilter().getWhiteList().isEmpty() && hopper.getFilter().getWhiteList().stream().noneMatch(itemStack -> itemStack.isSimilar(item))
+                    || hopper.getFilter().getBlackList().stream().anyMatch(itemStack -> itemStack.isSimilar(item)));
+
+            if (blocked) {
+                if (filterCache != null && filterCache.addItem(itemToMove)) {
+                    hopperCache.removeItems(itemToMove);
+                    return true;
+                }
+                continue;
+            }
+
+            int moved = addToCrafterInventory(crafter, crafterInventory, itemToMove);
+            if (moved > 0) {
+                ItemStack removed = itemToMove.clone();
+                removed.setAmount(moved);
+                hopperCache.removeItems(removed);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private int addToCrafterInventory(Crafter crafter, Inventory crafterInventory, ItemStack itemToMove) {
+        if (itemToMove == null || itemToMove.getAmount() <= 0) {
+            return 0;
+        }
+
+        for (int crafterSlot = 0; crafterSlot < 9; crafterSlot++) {
+            if (crafter.isSlotDisabled(crafterSlot)) {
+                continue;
+            }
+
+            ItemStack existing = crafterInventory.getItem(crafterSlot);
+            if (existing != null && existing.getAmount() != 0) {
+                continue;
+            }
+
+            ItemStack placed = itemToMove.clone();
+            placed.setAmount(1);
+            crafterInventory.setItem(crafterSlot, placed);
+            return 1;
+        }
+
+        return 0;
+    }
+
     private StorageContainerCache.Cache getFilterEndpoint(HopperImpl hopper) {
         // Get endpoint location.
         Location endPoint = hopper.getFilter().getEndPoint();
@@ -365,23 +432,11 @@ public class HopTask extends BukkitRunnable {
 
                 int lastFilledSlot = -1; //Get it from the persistent data container
 
-                //Get the first slot we can push an item to
-                for (int i = 0; i < 9; i++) {
-                    if (crafter.isSlotDisabled(i)) {
-                        continue;
-                    }
-                    ItemStack crafterItem = crafterInventory.getItem(i);
-                    if (crafterItem != null) continue; //Skip filled slots
-
-                    for (int j = 0; j < 5; j++) {
-                        ItemStack itemToPush = hopperCache.cachedInventory[i];
-                        if (itemToPush == null) {
-                            continue;
-                            //If the item is null, we can't push it, so skip it
-                        }
-                    }
+                if (tryPushCrafter(hopper, hopperCache, crafter, crafterInventory, filterCache, maxToMove, blockedMaterials)) {
+                    return;
                 }
-            continue;
+
+                continue;
             }
 
             CustomContainer container = this.plugin.getContainerManager().getCustomContainer(targetLocation.getBlock());
